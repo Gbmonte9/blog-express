@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= title
+
+  if verificacao
+    //- Se o usuário foi encontrado, mostra os dados
+    h2 Usuário encontrado:
+    ul
+      li ID: #{users.id}
+      li Nome: #{users.nome}
+      li Email: #{users.email}
+      li Ativo: #{users.ativo ? 'Sim' : 'Não'}
+      li Data de cadastro: #{users.dt_cadastro.toLocaleDateString()}
+  else
+    //- Se não foi encontrado, mostra mensagem de erro
+    h2 Usuário não encontrado.
