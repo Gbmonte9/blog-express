@@ -57,7 +57,7 @@ router.post('/', async function(req, res, next) {
 
     const novoUsuario = {
       vid: uuidv4(),       
-      vnome: nome,
+      vnome: nome.trim(),
       vemail: email,
       vsenha: senhaHash,
       dt_cadastro: new Date(),

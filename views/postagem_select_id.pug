@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  h1 Postagem Detalhada
+
+  if verificacao
+    .card
+      h2= posts.titulo
+      p 
+        strong Descrição: 
+        | #{posts.descricao}
+      p 
+        strong Data de Cadastro: 
+        | #{new Date(posts.dt_cadastro).toLocaleString()}
+      p 
+        strong Ativo: 
+        | #{posts.ativo ? 'Sim' : 'Não'}
+      p 
+        strong Código do Usuário:
+        | #{posts.cod_usuario}
+
+  else
+    .alert.alert-warning
+      p Nenhuma postagem encontrada com o ID fornecido.
+
+  a(href="/") Voltar

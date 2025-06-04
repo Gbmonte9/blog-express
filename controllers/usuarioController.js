@@ -22,6 +22,26 @@ async function select_usuario_id(usuario_id) {
   }
 }
 
+async function select_usuario_email(usuario_email) {
+  
+  const client = createDbClient();
+
+  try {
+    await client.connect();
+
+    const sqlPath = path.join(__dirname, '..', 'sql', 'usuario', 'select_table_email.sql');
+    const sql = fs.readFileSync(sqlPath, 'utf-8');
+
+    const result = await client.query(sql, [usuario_email]);
+    return result.rows[0];
+  } catch (err) {
+    console.error('Erro ao buscar usuário por ID:', err);
+    return null;
+  } finally {
+    await client.end();
+  }
+}
+
 async function select_usuario_all() {
   const client = createDbClient();
 
@@ -69,5 +89,6 @@ async function insert_table_usuario({ vid, vnome, vemail, vsenha, dt_cadastro, v
 module.exports = {
   select_usuario_id,
   select_usuario_all,
-  insert_table_usuario
+  insert_table_usuario,
+  select_usuario_email
 };

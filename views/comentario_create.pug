@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1 Novo Comentário
+
+  if mensagem
+    p(style='color: green')= mensagem
+  if erro
+    p(style='color: red')= erro
+
+  form(method='POST', action='/comentario')
+    div
+      label(for='email') Seu Email:
+      input#email(type='email', name='email', required)
+
+    div
+      label(for='postagem_id') Escolha a Postagem:
+      select(name='postagem_id', required)
+        option(value='') -- Selecione uma postagem --
+        each postagem in postagens
+          option(value=postagem.id)= postagem.titulo
+
+    div
+      label(for='conteudo') Comentário:
+      textarea(name='conteudo', required)
+
+    button(type='submit') Comentar
