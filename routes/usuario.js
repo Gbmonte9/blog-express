@@ -1,17 +1,17 @@
 var express = require('express');
 var router = express.Router();
-const { ensureDatabaseExists, select_usuario_id, insert_table_usuario, select_usuario_email, select_postagem_all } = require('../db'); // Ajustar caminho se necessário
+const { ensureDatabaseExists, select_usuario_id, insert_table_usuario, select_postagem_ativo, select_usuario_email_e_ativo} = require('../db'); // Ajustar caminho se necessário
 const { v4: uuidv4 } = require('uuid');
 const { hashPassword, comparePassword } = require('../bcrypt');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  const anoAtual = new Date().getFullYear(); // pega o ano atual
+  const anoAtual = new Date().getFullYear(); 
   res.render('usuario_create', { title: 'Cadastro Usuario', anoAtual });
 });
 
 router.get('/login', function(req, res, next) {
-  const anoAtual = new Date().getFullYear(); // pega o ano atual
+  const anoAtual = new Date().getFullYear();
   res.render('usuario_login', { title: 'Login de Usuario', anoAtual });
 });
 
@@ -19,14 +19,14 @@ router.post('/login', async (req, res, next) => {
   const { email, senha } = req.body;
 
   try {
-    await ensureDatabaseExists(); // Garante que o banco e as tabelas existem
-    const usuario = await select_usuario_email(email); // Busca o usuário pelo e-mail
-    const anoAtual = new Date().getFullYear(); // pega o ano atual
+    await ensureDatabaseExists(); 
+    const usuario = await select_usuario_email_e_ativo(email); 
+    const anoAtual = new Date().getFullYear(); 
 
     if (!usuario) {
       return res.render('usuario_login', {
         title: 'Login de Usuario',
-        message: 'Email ou senha inválidos.',
+        message: 'Email incorreto ou desativo',
         anoAtual
       });
     }
@@ -40,7 +40,7 @@ router.post('/login', async (req, res, next) => {
     } else {
       return res.render('usuario_login', {
         title: 'Login de Usuario',
-        message: 'Email ou senha inválidos.',
+        message: 'Senha e Email invalida.',
         anoAtual
       });
     }
@@ -55,7 +55,7 @@ router.get('/:id', async function(req, res, next) {
 
   try {
     await ensureDatabaseExists(); 
-    const postagensAll = await select_postagem_all();
+    const postagensAll = await select_postagem_ativo();
     const usuario = await select_usuario_id(id); 
     const anoAtual = new Date().getFullYear(); 
 
@@ -69,7 +69,7 @@ router.get('/:id', async function(req, res, next) {
       });
     } else {
       res.render('index_usuario.pug', {
-        title: 'Index Usuario',
+        title: 'Index Usuario Desativado',
         users: null,
         verificacao: false  
       });

@@ -9,4 +9,5 @@ SELECT
 FROM comentario c
 JOIN usuario u ON c.cod_usuario = u.id
 WHERE c.cod_postagem = $1
-  AND c.ativo = true;
+  AND c.ativo = true
+  AND u.ativo = true;

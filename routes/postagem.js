@@ -104,7 +104,7 @@ router.get('/:id', async function(req, res, next) {
 
     if (!postagem) {
       return res.render('postagem_select_id', {
-        title: 'Postagem',
+        title: 'Postagem Não ativa',
         posts: null,
         commits: null,
         verificacao: false,
@@ -157,7 +157,7 @@ router.get('/:postId/usuario/:userId', async function(req, res, next) {
 
     if (!postagem) {
       return res.render('postagem_select_id_e_usuarioid', {
-        title: 'Postagem',
+        title: 'Postagem Não ativa',
         posts: null,
         commits: null,
         verificacao: false,

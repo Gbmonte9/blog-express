@@ -64,6 +64,11 @@ async function select_usuario_email(usuario_email) {
   return usuario;
 }
 
+async function select_usuario_email_e_ativo(usuario_email) {
+  const usuario = await usuarioController.select_usuario_email_e_ativo(usuario_email);
+  return usuario;
+}
+
 async function select_usuario_all() {
   const usuarios = await usuarioController.select_usuario_all();
   return usuarios;
@@ -89,6 +94,11 @@ async function select_postagem_all() {
   return postagem;
 }
 
+async function select_postagem_ativo() {
+  const postagem = await postagemController.select_postagem_ativo();
+  return postagem;
+}
+
 async function insert_table_postagem({ id, titulo, descricao, dt_cadastro, ativo, usuario_id }) {
   try {
     const resultado = await postagemController.insert_table_postagem({ id, titulo, descricao, dt_cadastro, ativo, usuario_id });
@@ -106,6 +116,11 @@ async function select_comentario_id(comentario_id) {
 
 async function select_comentario_postagem_id(postagem_id) {
   const comentario = await comentarioController.select_comentario_postagem_id(postagem_id);
+  return comentario;
+}
+
+async function select_comentario_postagem_id_ativo(postagem_id) {
+  const comentario = await comentarioController.select_comentario_postagem_id_ativo(postagem_id);
   return comentario;
 }
 
@@ -194,5 +209,8 @@ module.exports = {
   select_postagem_id,
   select_comentario_id,
   select_postagem_all,
-  select_comentario_postagem_id
+  select_comentario_postagem_id,
+  select_usuario_email_e_ativo,
+  select_postagem_ativo,
+  select_comentario_postagem_id_ativo
 };

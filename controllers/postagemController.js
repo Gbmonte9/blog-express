@@ -22,6 +22,26 @@ async function select_postagem_id(postagem_id) {
   }
 }
 
+//continuaão
+async function select_postagem_ativo() {
+  const client = createDbClient();
+
+  try {
+    await client.connect();
+
+    const sqlPath = path.join(__dirname, '..', 'sql', 'postagem', 'select_table_postagem_ativo.sql');
+    const sql = fs.readFileSync(sqlPath, 'utf-8');
+
+    const result = await client.query(sql);
+    return result.rows;
+  } catch (err) {
+    console.error('Erro ao buscar todas as postagens_ativa:', err);
+    return [];
+  } finally {
+    await client.end();
+  }
+}
+
 async function select_postagem_all() {
   const client = createDbClient();
 
@@ -69,5 +89,6 @@ async function insert_table_postagem({id, titulo, descricao, dt_cadastro, ativo,
 module.exports = {
   select_postagem_id,
   select_postagem_all,
-  insert_table_postagem
+  insert_table_postagem,
+  select_postagem_ativo
 };

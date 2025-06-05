@@ -1,1 +1,2 @@
-SELECT * FROM postagem;
+SELECT * FROM postagem
+WHERE ativo = true;

@@ -1,1 +1,1 @@
-SELECT * FROM usuario WHERE id = $1;
+SELECT * FROM usuario WHERE id = $1 AND ativo = true;

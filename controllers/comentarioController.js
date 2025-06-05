@@ -41,6 +41,26 @@ async function select_comentario_postagem_id(postagem_id) {
   }
 }
 
+// continuacao
+async function select_comentario_postagem_id_ativo() {
+  const client = createDbClient();
+
+  try {
+    await client.connect();
+
+    const sqlPath = path.join(__dirname, '..', 'sql', 'comentario', 'select_table_comentario_postagem_id_ativo.sql');
+    const sql = fs.readFileSync(sqlPath, 'utf-8');
+
+    const result = await client.query(sql, [postagem_id]);
+    return result.rows; 
+  } catch (err) {
+    console.error('Erro ao buscar comentários por postagem_id:', err);
+    return [];
+  } finally {
+    await client.end();
+  }
+}
+
 async function select_comentario_all() {
   const client = createDbClient();
 
@@ -89,5 +109,6 @@ module.exports = {
   select_comentario_id,
   select_comentario_all,
   insert_table_comentario,
-  select_comentario_postagem_id
+  select_comentario_postagem_id,
+  select_comentario_postagem_id_ativo
 };
