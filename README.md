@@ -50,8 +50,8 @@ const client = new Client({
 | Rota | Método | Descrição |
 |------|--------|-----------|
 | `/` | `GET` | Página inicial. Inicia a verificação/criação do banco de dados |
-| `/usuario` | `GET / POST` | Exibe usuários e permite cadastrar um novo |
 | `/postagem/` | `GET ` | Exibe postagens do usuário |
+| `/usuario` | `GET / POST` | Permite cadastrar um novo |
 | `/usuario/login` | `GET / POST` | Tela de login do usuário |
 | `/postagem/usuario/:id` | `GET / POST` | Exibe postagens do usuário e permite criar novas |
 | `/postagem/:postId/usuario/:userId` | `GET` | Visualiza detalhes de uma postagem e seus comentários |
