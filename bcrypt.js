@@ -1,8 +1,7 @@
 const bcrypt = require('bcrypt');
 
-const saltRounds = 10; // Quantidade de rounds para gerar o salt
+const saltRounds = 10; 
 
-// Função para gerar o hash da senha
 async function hashPassword(senha) {
   try {
     const hash = await bcrypt.hash(senha, saltRounds);
@@ -13,11 +12,10 @@ async function hashPassword(senha) {
   }
 }
 
-// Função para comparar a senha com o hash
 async function comparePassword(senha, hash) {
   try {
     const match = await bcrypt.compare(senha, hash);
-    return match; // true ou false
+    return match; 
   } catch (err) {
     console.error('Erro ao comparar senha:', err);
     throw err;

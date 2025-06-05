@@ -3,15 +3,15 @@ extends layout
 block content
   nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.py-2
     .container.d-flex.align-items-center
-      a.navbar-brand(href=`/usuario/${users.id}`) ${users.nome}
+      a.navbar-brand(href=`/usuario/${users.id}`)= users.nome
       button.navbar-toggler(type='button', data-bs-toggle='collapse', data-bs-target='#navbarNav')
         span.navbar-toggler-icon
       #navbarNav.collapse.navbar-collapse
         ul.navbar-nav.ms-auto
           li.nav-item
-            a.nav-link(href='/usuario') Cadastrar
+            a.nav-link(href=`/postagem/usuario/${users.id}`) Cadastrar Postagem
           li.nav-item
-            a.nav-link(href='/usuario/login') Entrar
+            a.nav-link(href='/') Sair
 
   .container.mt-5
     .row.justify-content-center
@@ -25,7 +25,7 @@ block content
             else if verificacao === false
               .alert.alert-danger.text-center= message
 
-            form(action="/postagem" method="POST")
+            form(action=`/postagem/usuario/${users.id}` method="POST")
               .mb-3
                 label.form-label(for="vtitulo") Título
                 input.form-control(type="text", name="vtitulo", id="vtitulo", required, placeholder="Digite o título da postagem")
@@ -33,10 +33,6 @@ block content
               .mb-3
                 label.form-label(for="vdescricao") Descrição
                 textarea.form-control(name="vdescricao", id="vdescricao", rows="5", required placeholder="Digite a descrição")
-
-              .mb-3
-                label.form-label(for="vemail") E-mail do Usuário
-                input.form-control(type="email", name="vemail", id="vemail", required, placeholder="Digite o e-mail do usuário")
 
               button.btn.btn-primary.w-100(type="submit") Cadastrar Postagem
 

@@ -25,6 +25,6 @@ block content
                 h5.card-title= post.titulo
                 p.card-text= post.descricao.length > 100 ? post.descricao.substring(0, 100) + '...' : post.descricao
               .card-footer.bg-transparent.border-top-0.text-end.mt-auto
-                a.btn.btn-primary(href=`/postagem/${post.id}`) Ver mais
+                a.btn.btn-primary(href=`/postagem/${post.id}/usuario/${users.id}`) Ver mais
     else
       .alert.alert-info.text-center.mt-4 Nenhuma postagem encontrada. Seja o primeiro a criar uma!

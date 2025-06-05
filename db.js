@@ -11,7 +11,7 @@ const app_blog = 'app_blog';
 
 async function ensureDatabaseExists() {
  
-  const defaultClient = createDbClient('app_blog');
+  const defaultClient = createDbClient('postgres');
 
   try {
     await defaultClient.connect();
@@ -42,7 +42,6 @@ async function ensureDatabaseExists() {
   try {
     await client.connect();
 
-    // Supondo que essas funções recebam o client e criem as tabelas
     await createUsuarioTable(client);
     await createPostagemTable(client);
     await createComentarioTable(client);
@@ -73,10 +72,10 @@ async function select_usuario_all() {
 async function insert_table_usuario({ vid, vnome, vemail, vsenha, dt_cadastro, vativo }) {
   try {
     const resultado = await usuarioController.insert_table_usuario({ vid, vnome, vemail, vsenha, dt_cadastro, vativo });
-    return resultado ? true : false; // true se inseriu, false se não
+    return resultado ? true : false; 
   } catch (error) {
     console.error('Erro no insert_table_usuario:', error);
-    return false; // falha ao inserir
+    return false; 
   }
 }
 
@@ -93,10 +92,10 @@ async function select_postagem_all() {
 async function insert_table_postagem({ id, titulo, descricao, dt_cadastro, ativo, usuario_id }) {
   try {
     const resultado = await postagemController.insert_table_postagem({ id, titulo, descricao, dt_cadastro, ativo, usuario_id });
-    return resultado ? true : false; // true se inseriu, false se não
+    return resultado ? true : false; 
   } catch (error) {
     console.error('Erro no insert_table_postagem:', error);
-    return false; // falha ao inserir
+    return false; 
   }
 }
 
@@ -105,25 +104,25 @@ async function select_comentario_id(comentario_id) {
   return comentario;
 }
 
-async function select_comentario_postagemId(postagem_id) {
-  const comentario = await comentarioController.select_comentario_postagemId(postagem_id);
+async function select_comentario_postagem_id(postagem_id) {
+  const comentario = await comentarioController.select_comentario_postagem_id(postagem_id);
   return comentario;
 }
 
 async function insert_table_comentario({id, descricao, dt_cadastro, ativo, cod_postagem, cod_usuario}) {
   try {
     const resultado = await comentarioController.insert_table_comentario({ id, descricao, dt_cadastro, ativo, cod_postagem, cod_usuario });
-    return resultado ? true : false; // true se inseriu, false se não
+    return resultado ? true : false; 
   } catch (error) {
     console.error('Erro no insert_table_comentario:', error);
-    return false; // falha ao inserir
+    return false; 
   }
 }
 
 async function createUsuarioTable(client) {
   
   try {
-    // Verifica se a tabela já existe
+
     const checkTable = await client.query(`
       SELECT to_regclass('public.usuario') AS table_exists;
     `);
@@ -133,7 +132,6 @@ async function createUsuarioTable(client) {
       return;
     }
 
-    // Se não existir, lê e executa o script para criar a tabela
     const sqlPath = path.join(__dirname, 'sql', 'usuario', 'create_table_usuario.sql');
     const createTableSql = fs.readFileSync(sqlPath, 'utf-8');
     await client.query(createTableSql);
@@ -143,11 +141,9 @@ async function createUsuarioTable(client) {
   }
 }
 
-// Tabela Postagem
 async function createPostagemTable(client) {
   try {
 
-    // Verifica se a tabela já existe
     const checkTable = await client.query(`
       SELECT to_regclass('public.postagem') AS table_exists;
     `);
@@ -166,11 +162,9 @@ async function createPostagemTable(client) {
   }
 }
 
-// Tabela Comentario
 async function createComentarioTable(client) {
   try {
 
-    // Verifica se a tabela já existe
     const checkTable = await client.query(`
       SELECT to_regclass('public.comentario') AS table_exists;
     `);
@@ -200,5 +194,5 @@ module.exports = {
   select_postagem_id,
   select_comentario_id,
   select_postagem_all,
-  select_comentario_postagemId
+  select_comentario_postagem_id
 };

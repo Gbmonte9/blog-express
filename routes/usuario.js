@@ -1,45 +1,47 @@
 var express = require('express');
 var router = express.Router();
-const { ensureDatabaseExists, select_usuario_id, insert_table_usuario, select_usuario_email } = require('../db'); // Ajustar caminho se necessário
+const { ensureDatabaseExists, select_usuario_id, insert_table_usuario, select_usuario_email, select_postagem_all } = require('../db'); // Ajustar caminho se necessário
 const { v4: uuidv4 } = require('uuid');
 const { hashPassword, comparePassword } = require('../bcrypt');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('usuario_create', { title: 'Cadastro' });
+  const anoAtual = new Date().getFullYear(); // pega o ano atual
+  res.render('usuario_create', { title: 'Cadastro Usuario', anoAtual });
 });
 
-/* GET home page. */
 router.get('/login', function(req, res, next) {
-  res.render('usuario_login', { title: 'Login' });
+  const anoAtual = new Date().getFullYear(); // pega o ano atual
+  res.render('usuario_login', { title: 'Login de Usuario', anoAtual });
 });
 
-router.post('/usuario/login', async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
   const { email, senha } = req.body;
 
   try {
     await ensureDatabaseExists(); // Garante que o banco e as tabelas existem
     const usuario = await select_usuario_email(email); // Busca o usuário pelo e-mail
+    const anoAtual = new Date().getFullYear(); // pega o ano atual
 
-    // Se não encontrou o usuário
     if (!usuario) {
       return res.render('usuario_login', {
-        title: 'Login',
+        title: 'Login de Usuario',
         message: 'Email ou senha inválidos.',
+        anoAtual
       });
     }
 
-    // Compara a senha com o hash salvo
-    const senhaCorreta = await comparePassword(usuario.senha, senha);
+    const senhaCorreta = await comparePassword(senha, usuario.senha);
 
     if (senhaCorreta) {
-      // Sucesso: redireciona
-      return res.redirect(`/${usuario.id}`);
+
+      return res.redirect(`/usuario/${usuario.id}`);
+
     } else {
-      // Senha incorreta
       return res.render('usuario_login', {
-        title: 'Login',
+        title: 'Login de Usuario',
         message: 'Email ou senha inválidos.',
+        anoAtual
       });
     }
   } catch (err) {
@@ -48,29 +50,28 @@ router.post('/usuario/login', async (req, res, next) => {
   }
 });
 
-/* GET usuário por ID */
 router.get('/:id', async function(req, res, next) {
   const id = req.params.id;
 
   try {
-    await ensureDatabaseExists(); // garante que o banco e tabelas existam
-    const postagens = await select_postagem_all();
-    const usuario = await select_usuario_id(id); // espera os dados do usuário
-    const anoAtual = new Date().getFullYear(); // pega o ano atual
+    await ensureDatabaseExists(); 
+    const postagensAll = await select_postagem_all();
+    const usuario = await select_usuario_id(id); 
+    const anoAtual = new Date().getFullYear(); 
 
     if (usuario) {
       res.render('index_usuario.pug', {
         title: 'Index Usuario',
         users: usuario,
-        postagens: listaPostagens, 
+        postagens: postagensAll, 
         anoAtual,
-        verificacao: true  // corrigido aqui
+        verificacao: true  
       });
     } else {
       res.render('index_usuario.pug', {
-        title: 'Express',
+        title: 'Index Usuario',
         users: null,
-        verificacao: false  // corrigido aqui
+        verificacao: false  
       });
     }
   } catch (err) {
@@ -79,11 +80,10 @@ router.get('/:id', async function(req, res, next) {
   }
 });
 
-
-//veriificacao do email
 router.post('/', async function(req, res, next) {
 
   const { nome, email, senha, senha1 } = req.body;
+  const anoAtual = new Date().getFullYear(); 
 
   if (senha !== senha1) {
     return res.render('usuario_create', {
@@ -96,12 +96,13 @@ router.post('/', async function(req, res, next) {
   const senhaHash = await hashPassword(senha);
 
   try {
+
     await ensureDatabaseExists();
 
     const novoUsuario = {
       vid: uuidv4(),       
       vnome: nome.trim(),
-      vemail: email,
+      vemail: email.trim(),
       vsenha: senhaHash,
       dt_cadastro: new Date(),
       vativo: true
@@ -113,13 +114,15 @@ router.post('/', async function(req, res, next) {
       res.render('usuario_create', {
         title: 'Usuario Cadastro',
         verificacao: true,
-        message: 'Cadastrado com Sucesso..'
+        message: 'Cadastrado com Sucesso..',
+        anoAtual
       });
     } else {
       res.render('usuario_create', {
         title: 'Usuario Cadastro',
         verificacao: false,
-        message: 'Erro ao inserir usuário.'
+        message: 'Erro ao inserir usuário.',
+        anoAtual
       });
     }
   } catch (err) {

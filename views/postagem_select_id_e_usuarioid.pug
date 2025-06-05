@@ -4,7 +4,7 @@ block content
   .container.mt-5
     h1.mb-4.text-center Postagem Detalhada
 
-    if verificacao
+    if verificacao && posts
       .card.shadow-sm.mb-4
         .card-body
           h2.card-title.mb-3= posts.titulo
@@ -22,12 +22,24 @@ block content
             |  #{posts.ativo ? 'Sim' : 'Não'}
 
           p
-            strong Código do Usuário:
-            |  #{posts.cod_usuario}
+            strong Usuário:
+            |  #{posts.nome_usuario}
 
         .card-footer.text-end.bg-transparent.border-0
-          a.btn.btn-secondary(href="/") Voltar
+          a.btn.btn-secondary(href=`/usuario/${userId}`) Voltar
 
+      // Formulário para novo comentário
+      .card.mb-3.shadow-sm
+        .card-body
+          h5.mb-3 Deixe seu comentário          
+          form(action=`/comentario/postagem/${posts.id}/usuario/${userId}`, method="POST")
+            .mb-3
+              label(for="comentario") Comentário:
+              textarea.form-control(name="conteudo", id="comentario", rows="4", required placeholder="Escreva seu comentário aqui")
+
+            button.btn.btn-primary(type="submit") Comentar
+
+      // Lista de Comentários
       h3.mt-5.mb-3.text-center Comentários
 
       if commits && commits.length > 0
@@ -35,26 +47,15 @@ block content
           .card.mb-3.shadow-sm
             .card-body
               p.mb-1
-                strong Autor:
-                |  #{comentario.nome}
+                strong Usuário:
+                |  #{comentario.usuario_nome}
               p.mb-1
-                strong Comentário:
-                |  #{comentario.texto}
+                strong Texto:
+                |  #{comentario.descricao}
               p.text-muted.small.mb-0
-                | Enviado em #{new Date(comentario.dt_comentario).toLocaleString()}
+                | Enviado em #{new Date(comentario.dt_cadastro).toLocaleString()}
       else
         .alert.alert-info.text-center Nenhum comentário encontrado para esta postagem.
-
-      // Formulário para novo comentário
-      .card.mb-3.shadow-sm
-        .card-body
-          h5.mb-3 Deixe seu comentário          
-          form(action="/comentario/usuario/#{userId}/postagem/#{posts.id}", method="POST")
-            .mb-3
-              label(for="comentario") Comentário:
-              textarea.form-control(name="comentario", id="comentario", rows="4", required placeholder="Escreva seu comentário aqui")
-
-            button.btn.btn-primary(type="submit") Comentar
 
     else
       .alert.alert-warning.text-center

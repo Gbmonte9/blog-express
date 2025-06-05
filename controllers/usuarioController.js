@@ -22,20 +22,20 @@ async function select_usuario_id(usuario_id) {
   }
 }
 
-async function select_usuario_email(usuario_email) {
+async function select_usuario_email(email) {
   
   const client = createDbClient();
 
   try {
     await client.connect();
 
-    const sqlPath = path.join(__dirname, '..', 'sql', 'usuario', 'select_table_email.sql');
+    const sqlPath = path.join(__dirname, '..', 'sql', 'usuario', 'select_table_usuario_email.sql');
     const sql = fs.readFileSync(sqlPath, 'utf-8');
 
-    const result = await client.query(sql, [usuario_email]);
+    const result = await client.query(sql, [email]);
     return result.rows[0];
   } catch (err) {
-    console.error('Erro ao buscar usuário por ID:', err);
+    console.error('Erro ao buscar usuário por Email:', err);
     return null;
   } finally {
     await client.end();

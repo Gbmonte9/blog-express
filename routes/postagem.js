@@ -1,11 +1,12 @@
 var express = require('express');
 var router = express.Router();
-const { ensureDatabaseExists, insert_table_postagem, select_postagem_id, select_usuario_id, select_comentario_postagemId } = require('../db'); // Ajustar caminho se necessário
+const { ensureDatabaseExists, insert_table_postagem, select_postagem_id, select_usuario_id, select_comentario_postagem_id } = require('../db'); // Ajustar caminho se necessário
 const { v4: uuidv4 } = require('uuid');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('postagem_create', { title: 'Express' });
+  const anoAtual = new Date().getFullYear(); 
+  res.render('postagem_create', { title: 'Postagem', anoAtual });
 });
 
 /* GET usuário por ID */
@@ -13,20 +14,22 @@ router.get('/usuario/:id', async function(req, res, next) {
   const id = req.params.id;
 
   try {
-    await ensureDatabaseExists(); // garante que o banco e tabelas existam
+
+    await ensureDatabaseExists(); 
     const usuario = await select_usuario_id(id);
+    const anoAtual = new Date().getFullYear(); 
 
     if (usuario) {
       res.render('postagem_create', {
         title: 'Cadastra Postagem',
         users: usuario,
-        verificacao: true  // corrigido aqui
+        anoAtual
       });
     } else {
       res.render('postagem_create', {
         title: 'Cadastra Postagem',
         users: null,
-        verificacao: false  // corrigido aqui
+        anoAtual
       });
     }
   } catch (err) {
@@ -35,7 +38,6 @@ router.get('/usuario/:id', async function(req, res, next) {
   }
 });
 
-/* POST usuário por ID */
 router.post('/usuario/:id', async function(req, res, next) {
   const { vtitulo, vdescricao } = req.body;
   const usuario_id = req.params.id;
@@ -43,15 +45,16 @@ router.post('/usuario/:id', async function(req, res, next) {
   try {
     await ensureDatabaseExists();
 
-    // Verifica se o usuário existe pelo email
     const usuario = await select_usuario_id(usuario_id);
+    const anoAtual = new Date().getFullYear(); 
 
     if (!usuario) {
       return res.render('postagem_create', {
-        title: 'Postagem de Cadastro',
+        title: 'Cadastra Postagem',
         verificacao: false,
         users: usuario,
         message: 'Usuário id não encontrado.',
+        anoAtual
       });
     }
 
@@ -68,17 +71,19 @@ router.post('/usuario/:id', async function(req, res, next) {
 
     if (cadastro) {
       res.render('postagem_create', {
-        title: 'Postagem de Cadastro',
+        title: 'Cadastra Postagem',
         verificacao: true,
         users: usuario,
-        message: 'Cadastrado com sucesso!',
+        message: 'Postagem Cadastrada com Sucesso.',
+        anoAtual
       });
     } else {
       res.render('postagem_create', {
-        title: 'Postagem de Cadastro',
+        title: 'Cadastra Postagem',
         verificacao: false,
         users: usuario,
         message: 'Erro ao inserir postagem.',
+        anoAtual
       });
     }
 
@@ -88,14 +93,14 @@ router.post('/usuario/:id', async function(req, res, next) {
   }
 });
 
-// GET postagem por ID
 router.get('/:id', async function(req, res, next) {
   const id = req.params.id;
 
   try {
-    await ensureDatabaseExists(); // Garante que o banco e as tabelas existam
+    await ensureDatabaseExists(); 
 
-    const postagem = await select_postagem_id(id); // Busca a postagem pelo ID
+    const postagem = await select_postagem_id(id); 
+    const anoAtual = new Date().getFullYear(); 
 
     if (!postagem) {
       return res.render('postagem_select_id', {
@@ -103,17 +108,34 @@ router.get('/:id', async function(req, res, next) {
         posts: null,
         commits: null,
         verificacao: false,
-        message: 'Postagem não encontrada.'
+        message: 'Postagem não encontrada.',
+        anoAtual
       });
     }
 
-    const comentarios = await select_comentario_postagemId(postagem.id); // Busca os comentários da postagem
+    let comentario = await select_comentario_postagem_id(id);
+
+    if (comentario && !Array.isArray(comentario)) {
+      comentario = [comentario];
+    }
+
+    if (!comentario) {
+      return res.render('postagem_select_id', {
+        title: 'Postagem',
+        posts: null,
+        commits: null,
+        verificacao: false,
+        message: 'comentarios não encontrada.',
+        anoAtual
+      });
+    }
 
     res.render('postagem_select_id', {
       title: 'Postagem Detalhada',
       posts: postagem,
-      commits: comentarios,
-      verificacao: true
+      commits: comentario,
+      verificacao: true,
+      anoAtual
     });
 
   } catch (err) {
@@ -122,37 +144,41 @@ router.get('/:id', async function(req, res, next) {
   }
 });
 
-// GET postagem por ID e por ID de usuário
-router.get('/postagem/:postId/usuario/:userId', async function(req, res, next) {
+router.get('/:postId/usuario/:userId', async function(req, res, next) {
   const postId = req.params.postId;
   const userId = req.params.userId;
 
   try {
-    
-    await ensureDatabaseExists(); // Garante que o banco e as tabelas existam
+    await ensureDatabaseExists();
 
-    const postagens = await select_postagem_all();
+    const anoAtual = new Date().getFullYear();
 
-    const postagem = await select_postagem_id(postId); // Busca a postagem pelo ID
+    const postagem = await select_postagem_id(postId); 
 
     if (!postagem) {
-      return res.render('postagem_select_id', {
+      return res.render('postagem_select_id_e_usuarioid', {
         title: 'Postagem',
         posts: null,
         commits: null,
         verificacao: false,
-        message: 'Postagem não encontrada.'
+        message: 'Postagem não encontrada.',
+        anoAtual
       });
     }
 
-    const comentarios = await select_comentario_postagemId(postId); // Busca os comentários da postagem
+    let comentario = await select_comentario_postagem_id(postagem.id);
 
-    res.render('postagem_select_id', {
+    if (comentario && !Array.isArray(comentario)) {
+      comentario = [comentario];
+    }
+
+    res.render('postagem_select_id_e_usuarioid', {
       title: 'Postagem Detalhada',
       posts: postagem,
-      commits: comentarios,
+      commits: comentario,
       verificacao: true,
-      userId: userId
+      userId: userId,
+      anoAtual
     });
 
   } catch (err) {

@@ -22,8 +22,8 @@ block content
             |  #{posts.ativo ? 'Sim' : 'Não'}
 
           p
-            strong Código do Usuário:
-            |  #{posts.cod_usuario}
+            strong Usuário:
+            |  #{posts.nome_usuario}
 
         .card-footer.text-end.bg-transparent.border-0
           a.btn.btn-secondary(href="/") Voltar
@@ -35,13 +35,13 @@ block content
           .card.mb-3.shadow-sm
             .card-body
               p.mb-1
-                strong Autor:
-                |  #{comentario.nome}
+                strong Usuário:
+                |   #{comentario.usuario_nome}
               p.mb-1
-                strong Comentário:
-                |  #{comentario.texto}
+                strong Texto:
+                |  #{comentario.descricao}
               p.text-muted.small.mb-0
-                | Enviado em #{new Date(comentario.dt_comentario).toLocaleString()}
+                | Enviado em #{new Date(comentario.dt_cadastro).toLocaleString()}
       else
         .alert.alert-info.text-center Nenhum comentário encontrado para esta postagem.
 
