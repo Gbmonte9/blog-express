@@ -1,8 +1,33 @@
+/* Centraliza o conteúdo verticalmente */
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-a {
-  color: #00B7FF;
+/* Ajusta o espaço entre navbar e conteúdo */
+.container {
+  flex: 1;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* Rodapé fixo */
+footer {
+  background-color: #343a40;
+  color: #fff;
+  padding: 10px 0;
+  text-align: center;
+  margin-top: auto;
+}
+
+/* Ajusta os cards */
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.02);
 }

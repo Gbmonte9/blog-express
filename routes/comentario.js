@@ -24,45 +24,61 @@ router.get('/', async (req, res) => {
   }
 });
 
-
 //veriificacao do email
-router.post('/', async function(req, res) {
-  const { email, postagem_id, conteudo } = req.body;
+// POST - Inserir comentário
+router.post('/usuario/:usuarioId/postagem/:postagemId', async function(req, res) {
+  const usuario_id = req.params.usuarioId;
+  const postagem_id = req.params.postagemId;
+  const { conteudo } = req.body;
 
   try {
     await ensureDatabaseExists();
 
-    // Busca o ID do usuário pelo email
-    const usuario = await select_usuario_email(email);
-
+    const usuario = await select_usuario_id(usuario_id);
     if (!usuario) {
-      return res.render('comentario_create', {
+      return res.render('postagem_select_id', {
         message: 'Usuário não encontrado!',
         verificacao: false,
-        postagens: await select_todas_postagens()
+        posts: null,
+        commits: null
+      });
+    }
+
+    const postagem = await select_postagem_id(postagem_id);
+    if (!postagem) {
+      return res.render('postagem_select_id', {
+        message: 'Postagem não encontrada!',
+        verificacao: false,
+        posts: null,
+        commits: null
       });
     }
 
     const novoComentario = {
       id: uuidv4(),
-      conteudo: conteudo.trim(),
-      dt_cadastro: new Date(),
+      texto: conteudo.trim(), // assumindo que sua tabela usa "texto" para o comentário
+      dt_comentario: new Date(),
       ativo: true,
-      usuario_id: usuario.id,
-      postagem_id: postagem_id,
+      cod_usuario: usuario.id,
+      cod_postagem: postagem.id
     };
 
-    const resultado = await insert_table_comentario(novoComentario);
+    await insert_table_comentario(novoComentario);
 
-    res.render('comentario_create', {
+    const comentarios = await select_comentario_postagemId(postagem_id);
+
+    res.render('postagem_select_id', {
+      title: 'Postagem Detalhada',
       message: 'Comentário cadastrado com sucesso!',
       verificacao: true,
-      postagens: await select_todas_postagens()
+      posts: postagem,
+      commits: comentarios,
+      userId: usuario.id
     });
 
   } catch (err) {
     console.error('Erro ao inserir comentário:', err);
-    res.status(500).send('Erro interno');
+    res.status(500).send('Erro interno no servidor');
   }
 });
 

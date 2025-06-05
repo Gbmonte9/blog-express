@@ -45,9 +45,20 @@ block content
       else
         .alert.alert-info.text-center Nenhum comentário encontrado para esta postagem.
 
+      // Formulário para novo comentário
+      .card.mb-3.shadow-sm
+        .card-body
+          h5.mb-3 Deixe seu comentário          
+          form(action="/comentario/usuario/#{userId}/postagem/#{posts.id}", method="POST")
+            .mb-3
+              label(for="comentario") Comentário:
+              textarea.form-control(name="comentario", id="comentario", rows="4", required placeholder="Escreva seu comentário aqui")
+
+            button.btn.btn-primary(type="submit") Comentar
+
     else
       .alert.alert-warning.text-center
         p Nenhuma postagem encontrada com o ID fornecido.
 
       .text-center.mt-3
-        a.btn.btn-outline-primary(href="/") Voltar
+        a.btn.btn-outline-primary(href=`/usuario/${userId}`) Voltar

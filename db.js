@@ -85,6 +85,11 @@ async function select_postagem_id(postagem_id) {
   return postagem;
 }
 
+async function select_postagem_all() {
+  const postagem = await postagemController.select_postagem_all();
+  return postagem;
+}
+
 async function insert_table_postagem({ id, titulo, descricao, dt_cadastro, ativo, usuario_id }) {
   try {
     const resultado = await postagemController.insert_table_postagem({ id, titulo, descricao, dt_cadastro, ativo, usuario_id });
@@ -100,9 +105,14 @@ async function select_comentario_id(comentario_id) {
   return comentario;
 }
 
-async function insert_table_comentario({id, descricao, dt_cadastro, dt_cadastro, ativo, cod_postagem, cod_usuario}) {
+async function select_comentario_postagemId(postagem_id) {
+  const comentario = await comentarioController.select_comentario_postagemId(postagem_id);
+  return comentario;
+}
+
+async function insert_table_comentario({id, descricao, dt_cadastro, ativo, cod_postagem, cod_usuario}) {
   try {
-    const resultado = await comentarioController.insert_table_comentario({ id, descricao, dt_cadastro, dt_cadastro, ativo, cod_postagem, cod_usuario });
+    const resultado = await comentarioController.insert_table_comentario({ id, descricao, dt_cadastro, ativo, cod_postagem, cod_usuario });
     return resultado ? true : false; // true se inseriu, false se não
   } catch (error) {
     console.error('Erro no insert_table_comentario:', error);
@@ -188,5 +198,7 @@ module.exports = {
   insert_table_postagem,
   insert_table_comentario,
   select_postagem_id,
-  select_comentario_id
+  select_comentario_id,
+  select_postagem_all,
+  select_comentario_postagemId
 };

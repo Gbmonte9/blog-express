@@ -1,33 +1,48 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.py-2
+    .container.d-flex.align-items-center
+      a.navbar-brand(href='/') Meu Blog
+      button.navbar-toggler(type='button', data-bs-toggle='collapse', data-bs-target='#navbarNav')
+        span.navbar-toggler-icon
+      #navbarNav.collapse.navbar-collapse
+        ul.navbar-nav.ms-auto
+          li.nav-item
+            a.nav-link(href='/usuario') Cadastrar
+          li.nav-item
+            a.nav-link(href='/usuario/login') Entrar
 
-  if !verificacao && message
-    p(style="color: red") #{message}
+  .container.mt-5
+    h1.text-center.mb-4= title
+    p.text-center.mb-4 Welcome to #{title}
 
-  if verificacao && message
-    p(style="color: green") #{message}
+    if !verificacao && message
+      .alert.alert-danger.text-center= message
 
-  form(method="POST", action="/usuario")  // Ajuste a action para a rota correta
-    div
-      label(for="nome") Nome:
-      input(type="text", name="nome", id="nome", required)
+    if verificacao && message
+      .alert.alert-success.text-center= message
 
-    div
-      label(for="email") Email:
-      input(type="email", name="email", id="email", required)
+    .row.justify-content-center
+      .col-md-6.col-lg-5
+        form(method="POST", action="/usuario/login")
+          .mb-3
+            label.form-label(for="nome") Nome
+            input.form-control(type="text", name="nome", id="nome", required, placeholder="Digite seu nome")
 
-    div
-      label(for="senha") Senha:
-      input(type="password", name="senha", id="senha", required)
+          .mb-3
+            label.form-label(for="email") Email
+            input.form-control(type="email", name="email", id="email", required, placeholder="Digite seu email")
 
-    div
-      label(for="senha1") Confirmar Senha:
-      input(type="password", name="senha1", id="senha1", required)
+          .mb-3
+            label.form-label(for="senha") Senha
+            input.form-control(type="password", name="senha", id="senha", required, placeholder="Digite sua senha")
 
-    div
-      button(type="submit") Cadastrar
+          .mb-3
+            label.form-label(for="senha1") Confirmar Senha
+            input.form-control(type="password", name="senha1", id="senha1", required, placeholder="Confirme sua senha")
 
-    a(href="/") Voltar 
+          button.btn.btn-primary.w-100(type="submit") Cadastrar
+
+          .mt-3.text-center
+            a(href="/") Voltar

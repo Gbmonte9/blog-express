@@ -1,0 +1,40 @@
+extends layout
+
+block content
+  nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.py-2
+    .container.d-flex.align-items-center
+      a.navbar-brand(href='/') Meu Blog
+      button.navbar-toggler(type='button', data-bs-toggle='collapse', data-bs-target='#navbarNav')
+        span.navbar-toggler-icon
+      #navbarNav.collapse.navbar-collapse
+        ul.navbar-nav.ms-auto
+          li.nav-item
+            a.nav-link(href='/usuario') Cadastrar
+          li.nav-item
+            a.nav-link(href='/usuario/login') Entrar
+
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-6.col-lg-5
+        .card.shadow-sm
+          .card-body
+            h2.card-title.mb-4.text-center Login de Usuário
+
+            if message
+              .alert.alert-danger.text-center= message
+
+            form(method='POST', action='/usuario/login')
+              .mb-3
+                label.form-label(for='email') Email
+                input#email.form-control(type='email', name='email', required, placeholder='Digite seu email')
+
+              .mb-3
+                label.form-label(for='senha') Senha
+                input#senha.form-control(type='password', name='senha', required, placeholder='Digite sua senha')
+
+              button.btn.btn-primary.w-100(type='submit') Entrar
+
+            .mt-3.text-center
+              p
+                | Não tem uma conta? 
+                a(href='/usuario') Cadastre-se aqui

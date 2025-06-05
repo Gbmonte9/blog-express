@@ -22,6 +22,26 @@ async function select_comentario_id(comenatrio_id) {
   }
 }
 
+async function select_comentario_postagemId(postagem_id) {
+  
+  const client = createDbClient();
+
+  try {
+    await client.connect();
+
+    const sqlPath = path.join(__dirname, '..', 'sql', 'comentario', 'select_table_comentario_postagemid.sql');
+    const sql = fs.readFileSync(sqlPath, 'utf-8');
+
+    const result = await client.query(sql, [postagem_id]);
+    return result.rows[0];
+  } catch (err) {
+    console.error('Erro ao buscar postagem_id por ID:', err);
+    return null;
+  } finally {
+    await client.end();
+  }
+}
+
 async function select_comentario_all() {
   const client = createDbClient();
 
@@ -41,7 +61,7 @@ async function select_comentario_all() {
   }
 }
 
-async function insert_table_comentario({id, descricao, dt_cadastro, dt_cadastro, ativo, cod_postagem, cod_usuario}) {
+async function insert_table_comentario({id, descricao, dt_cadastro, ativo, cod_postagem, cod_usuario}) {
   
   const client = createDbClient();
 
@@ -52,7 +72,7 @@ async function insert_table_comentario({id, descricao, dt_cadastro, dt_cadastro,
     const sqlPath = path.join(__dirname, '..', 'sql', 'comentario', 'insert_table_comentario.sql');
     const sql = fs.readFileSync(sqlPath, 'utf-8');
 
-    const values = [id, descricao, dt_cadastro, dt_cadastro, ativo, cod_postagem, cod_usuario];
+    const values = [id, descricao, dt_cadastro, ativo, cod_postagem, cod_usuario];
 
     const result = await client.query(sql, values);
 
@@ -69,5 +89,6 @@ async function insert_table_comentario({id, descricao, dt_cadastro, dt_cadastro,
 module.exports = {
   select_comentario_id,
   select_comentario_all,
-  insert_table_comentario
+  insert_table_comentario,
+  select_comentario_postagemId
 };
